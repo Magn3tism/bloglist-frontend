@@ -10,6 +10,11 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState("");
+  const [likes, setLikes] = useState("");
+
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
@@ -18,6 +23,7 @@ const App = () => {
     const loggedInUser = window.localStorage.getItem("loggedInUser");
     if (loggedInUser) {
       setUser(JSON.parse(loggedInUser));
+      blogService.setToken(JSON.parse(loggedInUser).token);
     }
   }, []);
 
@@ -29,6 +35,7 @@ const App = () => {
       setUser(user);
       setUsername("");
       setPassword("");
+      blogService.setToken(user.token);
 
       window.localStorage.setItem("loggedInUser", JSON.stringify(user));
     } catch (exception) {
@@ -41,30 +48,44 @@ const App = () => {
     setUser(null);
   };
 
+  const postBlog = async (e) => {
+    e.preventDefault();
+    const response = await blogService.create({ title, author, url, likes });
+
+    setBlogs(blogs.concat(response));
+    setTitle("");
+    setAuthor("");
+    setUrl("");
+    setLikes("");
+  };
+
   const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        Username:{" "}
-        <input
-          type="text"
-          value={username}
-          name="username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
+    <>
+      <h1>LogIn</h1>
+      <form onSubmit={handleLogin}>
+        <div>
+          Username:{" "}
+          <input
+            type="text"
+            value={username}
+            name="username"
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
 
-      <div>
-        Password:{" "}
-        <input
-          type="password"
-          value={password}
-          name="passowrd"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
+        <div>
+          Password:{" "}
+          <input
+            type="password"
+            value={password}
+            name="passowrd"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
 
-      <button type="submit">Login</button>
-    </form>
+        <button type="submit">Login</button>
+      </form>
+    </>
   );
 
   const blogsElement = () => (
@@ -75,6 +96,47 @@ const App = () => {
         <Blog key={blog.id} blog={blog} />
       ))}
       <button onClick={logout}>Log Out</button>
+      <p> </p>
+      <form onSubmit={postBlog}>
+        <div>
+          Title:{" "}
+          <input
+            type="text"
+            value={title}
+            name="title"
+            onChange={({ target }) => setTitle(target.value)}
+          />
+        </div>
+        <div>
+          Author:{" "}
+          <input
+            type="text"
+            value={author}
+            name="author"
+            onChange={({ target }) => setAuthor(target.value)}
+          />
+        </div>
+        <div>
+          Url:{" "}
+          <input
+            type="text"
+            value={url}
+            name="url"
+            onChange={({ target }) => setUrl(target.value)}
+          />
+        </div>
+        <div>
+          Likes:{" "}
+          <input
+            type="number"
+            value={likes}
+            name="likes"
+            onChange={({ target }) => setLikes(target.value)}
+          />
+        </div>
+
+        <button type="submit">Post</button>
+      </form>
     </div>
   );
 
