@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
 import PostForm from "./components/postForm";
+import Togglable from "./components/Toggable";
 
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -27,6 +28,8 @@ const App = () => {
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
   const [likes, setLikes] = useState("");
+
+  const postFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -81,6 +84,7 @@ const App = () => {
 
   const postBlog = async (e) => {
     e.preventDefault();
+    postFormRef.current.toggleVisibility();
     const response = await blogService.create({ title, author, url, likes });
 
     setBlogs(blogs.concat(response));
@@ -137,18 +141,20 @@ const App = () => {
       <button onClick={logout}>Log Out</button>
       <p> </p>
 
-      <h3>Add New Blog</h3>
-      <PostForm
-        handleSubmit={postBlog}
-        title={title}
-        author={author}
-        url={url}
-        likes={likes}
-        handleTitleChange={({ target }) => setTitle(target.value)}
-        handleAuthorChange={({ target }) => setAuthor(target.value)}
-        handleUrlChange={({ target }) => setUrl(target.value)}
-        handleLikeChange={({ target }) => setLikes(target.value)}
-      />
+      <Togglable buttonLabel="New" ref={postFormRef}>
+        <h3>Add New Blog</h3>
+        <PostForm
+          handleSubmit={postBlog}
+          title={title}
+          author={author}
+          url={url}
+          likes={likes}
+          handleTitleChange={({ target }) => setTitle(target.value)}
+          handleAuthorChange={({ target }) => setAuthor(target.value)}
+          handleUrlChange={({ target }) => setUrl(target.value)}
+          handleLikeChange={({ target }) => setLikes(target.value)}
+        />
+      </Togglable>
     </div>
   );
 
