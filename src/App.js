@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import _ from "lodash";
 
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
@@ -27,7 +28,9 @@ const App = () => {
   const postFormRef = useRef();
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => {
+      setBlogs(_.orderBy(blogs, "likes", "desc"));
+    });
   }, []);
 
   useEffect(() => {
@@ -86,15 +89,14 @@ const App = () => {
 
     postFormRef.current.toggleVisibility();
     const returnedBlog = await blogService.create(blogObject);
-    setBlogs(blogs.concat(returnedBlog));
+    setBlogs(_.orderBy(blogs.concat(returnedBlog), "likes", "desc"));
   };
 
   const deleteBlog = async (id) => {
     const blogToBeDeleted = blogs.find((blog) => blog.id === id);
 
     const response = await blogService.deleteBlog(id);
-    console.log(response);
-    setBlogs(await blogService.getAll());
+    setBlogs(_.orderBy(await blogService.getAll(), "likes", "desc"));
 
     setStyle({ ...style, color: "green" });
     setMessage(`${blogToBeDeleted.title} has been deleted`);
