@@ -123,7 +123,7 @@ const App = () => {
       <button onClick={logout}>Log Out</button>
       <p> </p>
 
-      <Togglable buttonLabel="New" ref={postFormRef}>
+      <Togglable closedLabel="New" openLabel="Close" ref={postFormRef}>
         <h3>Add New Blog</h3>
         <PostForm createBlog={addBlog} />
       </Togglable>
