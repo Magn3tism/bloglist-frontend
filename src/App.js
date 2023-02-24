@@ -89,6 +89,20 @@ const App = () => {
     setBlogs(blogs.concat(returnedBlog));
   };
 
+  const deleteBlog = async (id) => {
+    const blogToBeDeleted = blogs.find((blog) => blog.id === id);
+
+    const response = await blogService.deleteBlog(id);
+    console.log(response);
+    setBlogs(await blogService.getAll());
+
+    setStyle({ ...style, color: "green" });
+    setMessage(`${blogToBeDeleted.title} has been deleted`);
+    setTimeout(() => {
+      setMessage("");
+    }, 3000);
+  };
+
   const loginForm = () => (
     <>
       <Notification message={message} style={style} />
@@ -130,7 +144,7 @@ const App = () => {
       </Togglable>
 
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} handleDelete={deleteBlog} />
       ))}
       <button onClick={logout}>Log Out</button>
       <p> </p>
