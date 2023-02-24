@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import Blog from "./components/Blog";
+import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
@@ -9,6 +10,16 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [message, setMessage] = useState("");
+  const [style, setStyle] = useState({
+    color: "red",
+    background: "lightgrey",
+    fontSize: 20,
+    borderStyle: "solid",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  });
 
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
@@ -38,14 +49,32 @@ const App = () => {
       blogService.setToken(user.token);
 
       window.localStorage.setItem("loggedInUser", JSON.stringify(user));
+
+      setStyle({ ...style, color: "green" });
+      setMessage(`Logged in as ${user.name}`);
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
     } catch (exception) {
       console.log(exception);
+
+      setStyle({ ...style, color: "red" });
+      setMessage("Wrong username or password");
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
     }
   };
 
   const logout = () => {
     window.localStorage.removeItem("loggedInUser");
     setUser(null);
+
+    setStyle({ ...style, color: "green" });
+    setMessage("Logout successful");
+    setTimeout(() => {
+      setMessage("");
+    }, 3000);
   };
 
   const postBlog = async (e) => {
@@ -53,6 +82,13 @@ const App = () => {
     const response = await blogService.create({ title, author, url, likes });
 
     setBlogs(blogs.concat(response));
+
+    setStyle({ ...style, color: "green" });
+    setMessage(`${title} has been added`);
+    setTimeout(() => {
+      setMessage("");
+    }, 3000);
+
     setTitle("");
     setAuthor("");
     setUrl("");
@@ -61,6 +97,7 @@ const App = () => {
 
   const loginForm = () => (
     <>
+      <Notification message={message} style={style} />
       <h1>LogIn</h1>
       <form onSubmit={handleLogin}>
         <div>
@@ -90,8 +127,8 @@ const App = () => {
 
   const blogsElement = () => (
     <div>
+      <Notification message={message} style={style} />
       <h2>Blogs</h2>
-      <p>{user.name} logged in</p>
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
