@@ -1,24 +1,30 @@
-const PostForm = (props) => {
-  const {
-    handleSubmit,
-    title,
-    author,
-    url,
-    likes,
-    handleTitleChange,
-    handleAuthorChange,
-    handleUrlChange,
-    handleLikeChange,
-  } = props;
+import { useState } from "react";
+
+const PostForm = ({ createBlog }) => {
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState("");
+  const [likes, setLikes] = useState("");
+
+  const addBlog = (e) => {
+    e.preventDefault();
+    createBlog({ title, author, url, likes });
+
+    setTitle("");
+    setAuthor("");
+    setUrl("");
+    setLikes("");
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={addBlog}>
       <div>
         Title:{" "}
         <input
           type="text"
           value={title}
           name="title"
-          onChange={handleTitleChange}
+          onChange={({ target }) => setTitle(target.value)}
         />
       </div>
       <div>
@@ -27,12 +33,17 @@ const PostForm = (props) => {
           type="text"
           value={author}
           name="author"
-          onChange={handleAuthorChange}
+          onChange={({ target }) => setAuthor(target.value)}
         />
       </div>
       <div>
         Url:{" "}
-        <input type="text" value={url} name="url" onChange={handleUrlChange} />
+        <input
+          type="text"
+          value={url}
+          name="url"
+          onChange={({ target }) => setUrl(target.value)}
+        />
       </div>
       <div>
         Likes:{" "}
@@ -40,7 +51,7 @@ const PostForm = (props) => {
           type="number"
           value={likes}
           name="likes"
-          onChange={handleLikeChange}
+          onChange={({ target }) => setLikes(target.value)}
         />
       </div>
 

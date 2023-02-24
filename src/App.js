@@ -24,11 +24,6 @@ const App = () => {
     marginBottom: 10,
   });
 
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
-  const [likes, setLikes] = useState("");
-
   const postFormRef = useRef();
 
   useEffect(() => {
@@ -82,23 +77,10 @@ const App = () => {
     }, 3000);
   };
 
-  const postBlog = async (e) => {
-    e.preventDefault();
+  const addBlog = async (blogObject) => {
     postFormRef.current.toggleVisibility();
-    const response = await blogService.create({ title, author, url, likes });
-
-    setBlogs(blogs.concat(response));
-
-    setStyle({ ...style, color: "green" });
-    setMessage(`${title} has been added`);
-    setTimeout(() => {
-      setMessage("");
-    }, 3000);
-
-    setTitle("");
-    setAuthor("");
-    setUrl("");
-    setLikes("");
+    const returnedBlog = await blogService.create(blogObject);
+    setBlogs(blogs.concat(returnedBlog));
   };
 
   const loginForm = () => (
@@ -143,17 +125,7 @@ const App = () => {
 
       <Togglable buttonLabel="New" ref={postFormRef}>
         <h3>Add New Blog</h3>
-        <PostForm
-          handleSubmit={postBlog}
-          title={title}
-          author={author}
-          url={url}
-          likes={likes}
-          handleTitleChange={({ target }) => setTitle(target.value)}
-          handleAuthorChange={({ target }) => setAuthor(target.value)}
-          handleUrlChange={({ target }) => setUrl(target.value)}
-          handleLikeChange={({ target }) => setLikes(target.value)}
-        />
+        <PostForm createBlog={addBlog} />
       </Togglable>
     </div>
   );
