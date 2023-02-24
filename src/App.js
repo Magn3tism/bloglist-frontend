@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
+import PostForm from "./components/postForm";
+
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
@@ -134,46 +136,19 @@ const App = () => {
       ))}
       <button onClick={logout}>Log Out</button>
       <p> </p>
-      <form onSubmit={postBlog}>
-        <div>
-          Title:{" "}
-          <input
-            type="text"
-            value={title}
-            name="title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          Author:{" "}
-          <input
-            type="text"
-            value={author}
-            name="author"
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          Url:{" "}
-          <input
-            type="text"
-            value={url}
-            name="url"
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <div>
-          Likes:{" "}
-          <input
-            type="number"
-            value={likes}
-            name="likes"
-            onChange={({ target }) => setLikes(target.value)}
-          />
-        </div>
 
-        <button type="submit">Post</button>
-      </form>
+      <h3>Add New Blog</h3>
+      <PostForm
+        handleSubmit={postBlog}
+        title={title}
+        author={author}
+        url={url}
+        likes={likes}
+        handleTitleChange={({ target }) => setTitle(target.value)}
+        handleAuthorChange={({ target }) => setAuthor(target.value)}
+        handleUrlChange={({ target }) => setUrl(target.value)}
+        handleLikeChange={({ target }) => setLikes(target.value)}
+      />
     </div>
   );
 
