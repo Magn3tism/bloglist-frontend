@@ -78,6 +78,12 @@ const App = () => {
   };
 
   const addBlog = async (blogObject) => {
+    setStyle({ ...style, color: "green" });
+    setMessage(`${blogObject.title} has been added`);
+    setTimeout(() => {
+      setMessage("");
+    }, 3000);
+
     postFormRef.current.toggleVisibility();
     const returnedBlog = await blogService.create(blogObject);
     setBlogs(blogs.concat(returnedBlog));
@@ -117,16 +123,17 @@ const App = () => {
     <div>
       <Notification message={message} style={style} />
       <h2>Blogs</h2>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
-      <button onClick={logout}>Log Out</button>
-      <p> </p>
 
       <Togglable closedLabel="New" openLabel="Close" ref={postFormRef}>
         <h3>Add New Blog</h3>
         <PostForm createBlog={addBlog} />
       </Togglable>
+
+      {blogs.map((blog) => (
+        <Blog key={blog.id} blog={blog} />
+      ))}
+      <button onClick={logout}>Log Out</button>
+      <p> </p>
     </div>
   );
 

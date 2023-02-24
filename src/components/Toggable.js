@@ -9,7 +9,6 @@ const Togglable = forwardRef(({ closedLabel, openLabel, children }, refs) => {
   const handleClick = (e) => {
     setVisible(!visible);
 
-    e.preventDefault();
     if (visible) {
       setLabel(closedLabel);
     } else {
@@ -19,6 +18,7 @@ const Togglable = forwardRef(({ closedLabel, openLabel, children }, refs) => {
 
   const toggleVisibility = () => {
     setVisible(!visible);
+    handleClick("");
   };
 
   useImperativeHandle(refs, () => {
