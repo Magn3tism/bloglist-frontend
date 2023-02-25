@@ -95,7 +95,7 @@ const App = () => {
   const deleteBlog = async (id) => {
     const blogToBeDeleted = blogs.find((blog) => blog.id === id);
 
-    const response = await blogService.deleteBlog(id);
+    await blogService.deleteBlog(id);
     setBlogs(_.orderBy(await blogService.getAll(), "likes", "desc"));
 
     setStyle({ ...style, color: "green" });
@@ -103,6 +103,20 @@ const App = () => {
     setTimeout(() => {
       setMessage("");
     }, 3000);
+  };
+
+  const updateBlog = async (id) => {
+    const blogToBeUpdated = blogs.find((blog) => blog.id === id);
+    const newBlog = {
+      title: blogToBeUpdated.title,
+      author: blogToBeUpdated.author,
+      url: blogToBeUpdated.url,
+      likes: blogToBeUpdated.likes + 1,
+      user: blogToBeUpdated.user.id,
+    };
+
+    await blogService.update(id, newBlog);
+    setBlogs(_.orderBy(await blogService.getAll(), "likes", "desc"));
   };
 
   const loginForm = () => (
@@ -146,7 +160,12 @@ const App = () => {
       </Togglable>
 
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} handleDelete={deleteBlog} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          handleDelete={deleteBlog}
+          handleLike={updateBlog}
+        />
       ))}
       <button onClick={logout}>Log Out</button>
       <p> </p>
